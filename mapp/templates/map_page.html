@@ -1,0 +1,997 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- <h1>The map page</h1> -->
+
+<div class="search-bar" id="search-bar-real">
+    <div class="row">
+      <input type="text" class="searchInput" id="searchInput" placeholder="Where do you want to explore?" autocomplete="off" name="searchInput"/>
+      <button class="searchButton"><i class="fa-solid fa-magnifying-glass"></i></button>
+    </div>
+    <div id="searchResults"></div>
+</div>
+
+<div class="error" id="error">
+</div>
+
+<div class="top">
+    <div id="map" class="full-map"></div>
+    <!--            <br>              -->
+    <div class="post-form" id="new-post">
+        <input class="new-post-button" id='new-post-button' type="button" value="x">
+        <form enctype="multipart/form-data" id="new-post-form" method="post">
+            <h4 class="rubik-bold">Add New Location</h4>
+            <table class="new-post-table">
+                {% for field in form.visible_fields %}
+                    {% if field.id_for_label == "id_image" %}
+                        <tr>
+                            <td>
+                                <div class="img-container" id="img-container">
+                                    <img class="uploaded-img" id="blank-upload"/>
+                                    {{field}}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="error">
+                                {% for error in field.errors %} {{error}} {% endfor %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="delete-crop">
+                                    <label class="sl-btn sl-upload" id="upload-button" for="id_image">
+                                        <span class="sl-btn-text rubik-regular">upload</span>
+                                        <span class="sl-btn-icon">
+                                            <i aria-hidden="true" class="fa fa-icon fa-upload"></i>
+                                        </span>
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td>{{field.label_tag}}</td>
+                        </tr>
+                        <tr>
+                            <td>{{field}}</td>
+                        </tr>
+                        <tr>
+                            <td class="error">
+                                {% for error in field.errors %} {{error}} {% endfor %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+
+                {% for hidden in form.hidden_fields %}
+                    {{hidden}}
+                {% endfor %}
+
+                <tr><td><label>difficulty:</label></tr></td>
+                <tr><td colspan="3">
+                    <span class="diff-icon" data-value="1">
+                    <i aria-hidden="true" class="fa-solid fa-person-hiking"></i>
+                    </span>
+                    <span class="diff-icon" data-value="2">
+                    <i aria-hidden="true" class="fa-solid fa-person-hiking"></i>
+                    </span>
+                    <span class="diff-icon" data-value="3">
+                    <i aria-hidden="true" class="fa-solid fa-person-hiking"></i>
+                    </span>
+                    <span class="diff-icon" data-value="4">
+                    <i aria-hidden="true" class="fa-solid fa-person-hiking"></i>
+                    </span>
+                    <span class="diff-icon" data-value="5">
+                    <i aria-hidden="true" class="fa-solid fa-person-hiking"></i>
+                    </span>
+                    <input type="hidden" id="diff_value" name="diff" value=""/>
+                </tr></td>
+
+                <tr><td><label>location type:</label></tr></td>
+                <tr><td colspan="3">
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="landmark" checked="checked" required>
+                      <i aria-hidden="true" class="fa fa-icon fa-landmark"></i>
+                    </label>
+
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="umbrella-beach">
+                      <i aria-hidden="true" class="fa fa-icon fa-umbrella-beach"></i>
+                    </label>
+
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="mountain-sun">
+                      <i aria-hidden="true" class="fa fa-icon fa-mountain-sun"></i>
+                    </label>
+
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="building">
+                      <i aria-hidden="true" class="fa fa-icon fa-building"></i>
+                    </label>
+
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="shop">
+                      <i aria-hidden="true" class="fa fa-icon fa-shop"></i>
+                    </label>
+
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="water">
+                      <i aria-hidden="true" class="fa fa-icon fa-water"></i>
+                    </label>
+
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="palette">
+                      <i aria-hidden="true" class="fa fa-icon fa-palette"></i>
+                    </label>
+
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="tree">
+                      <i aria-hidden="true" class="fa fa-icon fa-tree"></i>
+                    </label>
+                </td></tr>
+                <tr><td colspan="3"><input type="hidden" id="x" name="x" value=""></td></tr>
+                <tr><td colspan="3"><input type="hidden" id="y" name="y" value=""></td></tr>
+                <tr><td colspan="3"><input type="hidden" id="width" name="width" value=""></td></tr>
+                <tr><td colspan="3"><input type="hidden" id="height" name="height" value=""></td></tr>
+                <tr><td colspan="3"><input type="hidden" id="scaleX" name="scaleX" value=""></td></tr>
+                <tr><td colspan="3"><input type="hidden" id="scaleY" name="scaleY" value=""></td></tr>
+                <tr><td colspan="3"><input type="submit" value="Submit" onclick="addPost()" class="btn btn-primary" id="create_post_button"></td></tr>
+            </table>
+            {% csrf_token %}
+        </form>
+    </div>
+    <div class="post-form" id="full-post">
+        <input class="new-post-button" id='full-post-button' type="button" value="x">
+        <table class="new-post-table">
+            <tr>
+                <td><h4 id="post-title" class="rubik-bold"></h4></td>
+            </tr>
+            <tr>
+                <td><h6 id="post-owner" class="text-secondary"></h6></td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="img-container">
+                        <img id="post-image" class="uploaded-img">
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <p id="post-text"></p>
+
+        <div id="add-to-playlist">
+            <button class="btn btn-primary" id="add-to-playlist-button">add to favs</button>
+        </div>
+
+        <form enctype="multipart/form-data" id="new-rating-form" method="post" onsubmit="return false" class="mt-4">
+            <span class="star" data-value="1">&#9733;</span>
+            <span class="star" data-value="2">&#9733;</span>
+            <span class="star" data-value="3">&#9733;</span>
+            <span class="star" data-value="4">&#9733;</span>
+            <span class="star" data-value="5">&#9733;</span>
+            <input type="hidden" id="rating_value" name="rating" value=""/>
+            <button onclick="newRating(0)" class="btn btn-warning" id="id_new_rating_button" type="button">add rating</button>
+            {% csrf_token %}
+        </form>
+
+        <form enctype="multipart/form-data" id="new-comment-form" method="post" onsubmit="return false" class="mt-4">
+            <input type="text" id="comment-text" name="text" required/>
+            <button onclick="addComment(0)" id="id_add_comment_button" class="btn btn-primary mt-2" type="button">add comment</button>
+            {% csrf_token %}
+        </form>
+        <div class = "comment-container" id = "comment-container"></div>
+    </div>
+
+    <!-- form for the playlists -->
+    <div class="post-form" id="playlist-selection" style="display: none;">
+        <input class="new-post-button" id="playlist-selection-button" type="button" value="x">
+        <div class="centered-content">
+            <h4 class="rubik-bold mt-2" id="playlist-selection-title">Select Playlists</h4>
+            <div id="playlist-checkboxes" class="checkbox-wrapper"></div>
+            <button class="btn btn-primary" id="save-changes-button">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.onload = initMap;
+    window.onload = getGlobal;
+    window.setInterval(getGlobal, 5000);
+
+    var detail_post = {{detail_post}}
+    var map;
+    var newPost;
+    var userPost;
+    var selectedPost = null;
+    const postIDs = {};
+    const posts = [];
+
+    /*******************************************************/
+    /******************** addPost Logic ********************/
+    /*******************************************************/
+    function sanitize(s) {
+        if (typeof s != "string") {
+            s = String(s);
+        }
+        // Be sure to replace ampersand first
+        return s.replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+    }
+
+    function addPost() {
+        let form = document.getElementById('new-post-form');
+        let img = document.getElementById('id_image');
+        if (newPostIsValid()) {
+            if (cropper) {
+                cropper.disable();
+                let _x = document.getElementById("x");
+                let _y = document.getElementById("y");
+                let _width = document.getElementById("width");
+                let _height = document.getElementById("height");
+                let _scaleX = document.getElementById("scaleX");
+                let _scaleY = document.getElementById("scaleY");
+
+                let cropperData = cropper.getData(true);
+                _x.value      = cropperData.x.toString();
+                _y.value      = cropperData.y.toString();
+                _width.value  = cropperData.width.toString();
+                _height.value = cropperData.height.toString();
+                _scaleX.value = cropperData.scaleX.toString();
+                _scaleY.value = cropperData.scaleY.toString();
+            }
+
+            let fd = new FormData(form);
+            userPost = null;
+            $("#new-post").hide("slide", {direction: "left"}, 900);
+            newPost.map = null;
+            $("#map").animate({width: "85vw", left:"7.5vw"}, 900);
+
+            $.ajax({
+                type:'POST',
+                url: "{% url 'add_post' %}",
+                data: fd,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(data) {
+                    userPost = data.posts;
+                    updatePosts(userPost);
+                    clearPostForm();
+                },
+                error: function(data) {
+                    response = JSON.parse(data.responseText);
+                    displayError(response.error);
+                    clearPostForm();
+                }
+            });
+        }
+    }
+
+    function newPostIsValid() {
+        let title = document.getElementById('id_title');
+        let text = document.getElementById('id_text');
+        let img = document.getElementById('id_image');
+        let latitude = document.getElementById('id_latitude');
+        let longitude = document.getElementById('id_longitude');
+        let terrain = document.getElementsByName('terrain');
+        let diff = document.getElementById('diff_value');
+        return (title.value && text.value && img.value && latitude.value && longitude.value && (diff.value !== ""));
+
+    }
+
+    function clearPostForm() {
+        let title = document.getElementById('id_title');
+        let text = document.getElementById('id_text');
+        let img = document.getElementById('id_image');
+        let latitude = document.getElementById('id_latitude');
+        let longitude = document.getElementById('id_longitude');
+        let terrain = document.getElementsByName('terrain');
+        let diff = document.getElementById('diff_value');
+        title.value = "";
+        text.value = "";
+        img.value = null;
+        latitude.value = "";
+        longitude.value = "";
+        diff.value = "";
+        let cropperImg = document.getElementById('blank-upload');
+        cropperImg.src = "";
+        cropper.destroy();
+
+        let oldDiffIcons = document.querySelectorAll('.diff-icon');
+        oldDiffIcons.forEach(s => {s.style.color ='gray';});
+        diff = 0;
+    }
+    /***********************************************************/
+    /******************** End addPost Logic ********************/
+    /***********************************************************/
+
+    /*******************************************************/
+    /******************** addComment Logic ********************/
+    /*******************************************************/
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('rating_value');
+    let rating = 0;
+    stars.forEach(star => {
+        star.onclick = () => {
+            rating = 0
+            rating = star.getAttribute('data-value');
+            ratingInput.value = rating;
+            stars.forEach(s => {
+                s.style.color = s.getAttribute('data-value') > rating ? 'gray' : 'gold';
+            });
+            rating = 0
+        };
+    });
+
+    const diffIcons = document.querySelectorAll('.diff-icon');
+    const diffInput = document.getElementById('diff_value');
+    let diff = 0;
+    diffIcons.forEach(icon => {
+        icon.onclick = () => {
+            diff = 0
+            diff = icon.getAttribute('data-value');
+            diffInput.value = diff;
+            diffIcons.forEach(s => {
+                s.style.color = s.getAttribute('data-value') > diff ? 'gray' : '#00008b';
+            });
+            diff = 0
+        };
+    });
+
+
+    function newRating(postId) {
+        let form = document.getElementById('new-rating-form');
+        let fd = new FormData(form);
+        fd.append('for_post', postId)
+        $.ajax({
+            type:'POST',
+            url: "{% url 'new_rating' %}",
+            data: fd,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function() {
+                showPost(postId)
+            },
+            error: function() {
+                response = JSON.parse(data.responseText);
+                if (response.error) {
+                    displayError(response.error);
+                }
+            }
+        });
+
+        let old_stars = document.querySelectorAll('.star');
+        old_stars.forEach(s => {s.style.color ='gray';});
+        rating = 0;
+    }
+    function addComment(postId) {
+        let form = document.getElementById('new-comment-form');
+        let fd = new FormData(form);
+        fd.append('for_post', postId)
+        $.ajax({
+            type:'POST',
+            url: "{% url 'add_comment' %}",
+            data: fd,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function() {
+                showPost(postId)
+            },
+            error: function() {
+                response = JSON.parse(data.responseText);
+                if (response.error) {
+                    displayError(response.error);
+                }
+            }
+        });
+        let commentText = document.getElementById("comment-text")
+        commentText.value = ''
+    }
+    /***********************************************************/
+    /******************** End addComment Logic ********************/
+    /***********************************************************/
+
+    /*******************************************************/
+    /******************** Cropper Logic ********************/
+    /*******************************************************/
+    var container = document.querySelector('.img-container');
+    var image = container.getElementsByTagName('img').item(0);
+    var inputImage = document.getElementById('id_image');
+    var uploadedImageURL;
+    var cropper;
+
+    var options = {
+      aspectRatio: 1 / 1,
+    };
+
+    inputImage.onchange = function () {
+      var files = this.files;
+      var file;
+
+      if (files && files.length) {
+        file = files[0];
+
+        if ((/^image\/\w+/.test(file.type)) && (file.type === 'image/png' || file.type === 'image/jpeg')) {
+          uploadedImageType = file.type;
+          uploadedImageName = file.name;
+
+          if (uploadedImageURL) {
+            URL.revokeObjectURL(uploadedImageURL);
+          }
+
+          image.src = uploadedImageURL = URL.createObjectURL(file);
+
+          if (cropper) {
+            cropper.destroy();
+          }
+
+          cropper = new Cropper(image, options);
+        } else {
+          window.alert('Please choose a jpg or png file.');
+        }
+      }
+    };
+    /***********************************************************/
+    /******************** End Cropper Logic ********************/
+    /***********************************************************/
+
+
+    /******************************************************/
+    /******************** jQuery Logic ********************/
+    /******************************************************/
+    $(document).ready(function() {
+        $('#new-post').hide();
+        $('#full-post').hide();
+
+        $("#new-post-button").click(function(event) {
+            $("#new-post").hide("slide", {direction: "left"}, 900);
+            newPost.map = null;
+            $("#map").animate({width: "85vw", left:"7.5vw"}, 900);
+        });
+
+        $("#create-post-button").click(function(event) {
+            $("#new-post").hide("slide", {direction: "left"}, 900);
+            newPost.map = null;
+            $("#map").animate({width: "85vw", left:"7.5vw"}, 900);
+        });
+
+        $("#full-post-button").click(function(event) {
+            $("#full-post").hide("slide", {direction: "left"}, 900);
+            $("#map").animate({width: "85vw", left:"7.5vw"}, 900);
+        });
+
+        $("#playlist-selection-button").click(function(event) {
+            $("#playlist-selection").hide("slide", {direction: "left"}, 900);
+        });
+
+        $("#crop-button").click(function(event) {
+        });
+
+        $("#new-post-form").submit(function(e) {
+            e.preventDefault();
+        });
+    });
+    /**********************************************************/
+    /******************** End jQuery Logic ********************/
+    /**********************************************************/
+
+    /**************************************************************/
+    /******************** Map and Marker Logic ********************/
+    /**************************************************************/
+    async function initMap() {
+      const { Map } = await google.maps.importLibrary("maps");
+      const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+      const center = {lat: 33.093637, lng: -117.204765};
+
+      map = new Map(document.getElementById("map"), {
+        zoom: 11,
+        minZoom: 2,
+        maxZoom: 20,
+        center,
+        restriction: {
+            latLngBounds: {
+              north: 85,
+              south: -85,
+              west: -180,
+              east: 180,
+            },
+          },
+        mapId: "d9e2ac9134010143",
+        streetViewControl: false,
+        clickableIcons: false,
+        disableDoubleClickZoom: true,
+        fullscreenControl: false,
+      });
+
+      if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+                map.panTo({lat: position.coords.latitude, lng:position.coords.longitude});
+            },
+          );
+      }
+
+
+      newPost = new google.maps.marker.AdvancedMarkerElement({
+          map,
+          position: {lat: 33.093637, lng: -117.204765},
+      });
+
+      newPost.map = null;
+
+      map.addListener("dblclick", (mapsMouseEvent) => {
+
+        let position = mapsMouseEvent.latLng;
+
+        if (newPost.map == null) {
+            newPost.map = map;
+        }
+
+        newPost.position = position;
+
+        if (document.getElementById("full-post").style.display != "none") {
+            $("#full-post").hide("slide", {direction: "left"}, 900);
+            $("#playlist-selection").hide("slide", {direction: "left"}, 900);
+            $("#new-post").show("slide", {direction: "right"}, 900);
+        } else {
+            $("#new-post").show("slide", {direction: "left"}, 900);
+        }
+
+        $("#map").animate({width: "55vw", left:"37.5vw"}, 900);
+        map.setZoom(11);
+        map.panTo(position);
+
+        if (selectedPost != null) {
+            selectedPost.content.classList.remove("highlight");
+            selectedPost.zIndex = null;
+            selectedPost = null;
+        }
+
+        let lat = document.getElementById("id_latitude");
+        let lon = document.getElementById("id_longitude");
+        lat.value = position.lat().toString();
+        lon.value = position.lng().toString();
+      });
+    }
+
+    function addMarkers() {
+      for (const post of posts) {
+        if (postIDs[post.id] == null) {
+            const AdvancedMarkerElement = new google.maps.marker.AdvancedMarkerElement({
+              map,
+              content: buildContent(post),
+              position: post.position,
+              title: post.title,
+            });
+            postIDs[post.id] = AdvancedMarkerElement;
+
+            AdvancedMarkerElement.addListener("click", () => {
+                if (!AdvancedMarkerElement.content.classList.contains("highlight")) {
+                    map.setZoom(11);
+                    map.panTo(post.position);
+                }
+                toggleHighlight(AdvancedMarkerElement);
+                if (document.getElementById("new-post").style.display != "none") {
+                    $("#new-post").hide("slide", {direction: "left"}, 900);
+                    newPost.map = null;
+                    $("#map").animate({width: "85vw", left:"7.5vw"}, 900);
+                    clearPostForm();
+                }
+            });
+        }
+      }
+    }
+
+    function toggleHighlight(markerView) {
+      if (markerView.content.classList.contains("highlight")) {
+        markerView.content.classList.remove("highlight");
+        markerView.zIndex = null;
+        selectedPost = null;
+      } else {
+        if (selectedPost != null) {
+            selectedPost.content.classList.remove("highlight");
+            selectedPost.zIndex = null;
+        }
+        markerView.content.classList.add("highlight");
+        markerView.zIndex = 1;
+        selectedPost = markerView;
+      }
+    }
+    /******************************************************************/
+    /******************** End Map and Marker Logic ********************/
+    /******************************************************************/
+
+
+    /****************************************************/
+    /******************** Post Logic ********************/
+    /****************************************************/
+
+    function showPost(id) {
+        if (document.getElementById("new-post").style.display != "none") {
+            $("#new-post").hide("slide", {direction: "left"}, 900);
+            newPost.map = null;
+            $("#full-post").show("slide", {direction: "right"}, 900);
+        } else {
+            $("#full-post").show("slide", {direction: "left"}, 900);
+            $("#map").animate({width: "55vw", left:"37.5vw"}, 900);
+        }
+
+        // Eventually do more stuff to get comments and whatnot
+        let img = document.getElementById('post-image');
+        img.src = imageURL(id);
+        getPost(id);
+
+        if (!postIDs[id].content.classList.contains("highlight")) {
+            toggleHighlight(postIDs[id]);
+        }
+
+        document.getElementById("searchResults").innerHTML = '';
+    }
+
+    const imageURL = function (id) {
+        return "{% url 'photo' 0 %}".replace("0",id)
+    }
+
+    function buildContent(post) {
+      const content = document.createElement("div");
+
+      let stars = ""
+      for (let i=0; i<Math.floor(post.rating); i++) {
+        stars += "<i aria-hidden='true' class='fa-solid fa-star'></i>\n"
+      }
+
+      if ((post.rating % 1) >= 0.5) {
+        stars += "<i aria-hidden='true' class='fa-solid fa-star-half'></i>\n"
+      }
+
+      content.classList.add("post");
+      content.innerHTML = `
+        <div class="icon">
+            <i aria-hidden="true" class="fa fa-icon fa-${sanitize(post.terrain)}" title="${sanitize(post.title)}"></i>
+            <span class="fa-sr-only">${post.terrain}</span>
+        </div>
+        <div class="pic">
+            <img src="${imageURL(post.id)}">
+        </div>
+        <div class="details">
+            <div class="title">${sanitize(post.title)}</div>
+            <div class="text">${sanitize(post.text)}</div>
+            <div class="features">
+                <div class="stars" id="stars${post.id}">
+                    ${stars}
+                    <span class="rating-text" id="rating${post.id}">${sanitize(post.rating)}</span>
+                </div>
+                <div class="difficulty">
+                    <i aria-hidden="true" class="fa-solid fa-person-hiking"></i>
+                    <span class="rating-text">${sanitize(post.difficulty)}</span>
+                </div>
+                <div>
+                    <button type="button" class="post-link" onclick="showPost(${post.id})">See full post</button>
+                </div>
+            </div>
+        </div>
+        `;
+      return content;
+    }
+    /********************************************************/
+    /******************** End Post Logic ********************/
+    /********************************************************/
+
+
+
+    /*************************************************************/
+    /******************** Info Fetching Logic ********************/
+    /*************************************************************/
+    function getPost(id) {
+        let xhr = new XMLHttpRequest()
+        xhr.onreadystatechange = function() {
+            if (this.readyState !== 4) return
+            checkPost(xhr);
+            // update new rating submit button
+            let new_rating_button = document.getElementById('id_new_rating_button');
+            new_rating_button.onclick = Function(`newRating(${id})`)
+            // update comment submit button
+            let new_comment_button = document.getElementById('id_add_comment_button');
+            new_comment_button.onclick = Function (`addComment(${id})`)
+
+            let response = JSON.parse(xhr.responseText);
+            // console.log("AAA")
+            // console.log("response")
+            // console.log(response)
+            // console.log(id)
+            // playlist stuff
+            handlePlaylists(response['playlists'], id)
+        }
+
+        xhr.open("GET", `post/${id}`, true)
+        xhr.send()
+    }
+
+    function makeCommentElement(comment) {
+        let commentElement = document.createElement("div")
+        commentElement.className = 'comment_div'
+        let commentProfileHerf = `<a href="other_profile/${comment.userId}" >${sanitize(comment.name)}</a>`
+        let commentTextSpan = `<span class = "comment_text"">${sanitize(comment.text)}</span>`
+        commentElement.innerHTML = `${commentProfileHerf} : ${commentTextSpan}`
+        return commentElement
+    }
+
+    function checkPost(xhr) {
+        // blah blah do the number check things
+        let response = JSON.parse(xhr.responseText)
+        let post = {
+                      id: response['post'].id,
+                      text: response['post'].text,
+                      title: response['post'].title,
+                      terrain: response['post'].terrain,
+                      rating: response['post'].rating,
+                      difficulty: response['post'].difficulty,
+                      position: {
+                        lat: Number(response['post'].latitude),
+                        lng: Number(response['post'].longitude),
+                      }
+                   };
+        map.panTo(post.position);
+        map.setZoom(11);
+        let title = document.getElementById('post-title');
+        let owner = document.getElementById('post-owner');
+
+        let text = document.getElementById('post-text');
+        title.innerHTML = post.title;
+        text.innerHTML = post.text;
+
+        owner.innerHTML = `<a href="other_profile/${response['post'].userID}">by ${sanitize(response['post'].userName)}</a>`
+
+        //comments
+        let comment_div = document.getElementById('comment-container')
+        comment_div.innerHTML = ''
+        for (let i = 0; i < response['comments'].length; i++) {
+            comment_div.append(makeCommentElement(response['comments'][i]))
+        }
+    }
+
+    function getGlobal() {
+        let xhr = new XMLHttpRequest()
+        xhr.onreadystatechange = function() {
+            if (this.readyState !== 4) return
+            updatePage(xhr)
+            if (detail_post != -1) {
+                showPost(detail_post)
+                detail_post = -1
+            }
+        }
+
+        xhr.open("GET", "get-global", true)
+        xhr.send()
+    }
+
+    function updatePage(xhr) {
+        if (xhr.status === 200) {
+            let response = JSON.parse(xhr.responseText)
+            updatePosts(response['posts'])
+            // handlePlaylists(response['playlists'], "testPostId")
+            return
+        }
+
+        if (xhr.status === 0) {
+            displayError("Cannot connect to server")
+            return
+        }
+
+
+        if (!xhr.getResponseHeader('content-type') === 'application/json') {
+            displayError(`Received status = ${xhr.status}`)
+            return
+        }
+
+        let response = JSON.parse(xhr.responseText)
+        if (response.hasOwnProperty('error')) {
+            displayError(response.error)
+            return
+        }
+
+        displayError(response)
+    }
+
+    function displayError(error) {
+        let errorElement = document.getElementById("error")
+        errorElement.style.display = "block";
+        errorElement.innerHTML = error
+        setTimeout(() => { errorElement.style.display = 'none'; errorElement.innerHTML = ''}, 5000);
+    }
+
+    function handlePlaylists(playlists, postId) {
+        // console.log("handleplaylists")
+        // console.log(playlists)
+        // console.log(postId)
+        const addToPlaylistButton = document.getElementById('add-to-playlist-button');
+        const playlistSelection = document.getElementById('playlist-selection');
+        const playlistCheckboxes = document.getElementById('playlist-checkboxes');
+        const saveChangesButton = document.getElementById('save-changes-button');
+
+        addToPlaylistButton.addEventListener('click', function() {
+            playlistSelection.style.display = 'block';
+
+            // clear existing checkboxes
+            playlistCheckboxes.innerHTML = '';
+
+            // console.log("before loop")
+            // ppopulate the checkboxes
+            playlists.forEach(playlist => {
+                // console.log("plyalist!!!")
+                // console.log(playlist)
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.value = playlist.id;
+                checkbox.checked = playlist.postIds.some(pid => pid === postId);
+                checkbox.className = "form-check-input";
+                checkbox.id = `checkbox-${playlist.id}`
+                const label = document.createElement('label');
+                label.innerHTML = playlist.name;
+                label.className = "form-check-label";
+                label.htmlFor = `checkbox-${playlist.id}`
+
+                playlistCheckboxes.appendChild(checkbox);
+                playlistCheckboxes.appendChild(label);
+                playlistCheckboxes.appendChild(document.createElement('br'));
+            });
+        });
+
+        saveChangesButton.addEventListener('click', function() {
+            const csrfToken = getCSRFToken();
+            // get checked plaulist ids
+            const checkedPlaylistIds = Array.from(playlistCheckboxes.querySelectorAll('input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+            // console.log("weird stuff")
+            // console.log(checkedPlaylistIds)
+            // ajax stuff
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'update_playlists' %}",
+                data: {
+                    postId: postId,
+                    playlistIds: checkedPlaylistIds
+                },
+                headers: {
+                    'X-CSRFToken': csrfToken
+                },
+                success: function() {
+                    playlistSelection.style.display = 'none';
+                },
+                error: function() {
+                    console.log("Error updating playlists");
+                    response = JSON.parse(data.responseText);
+                    if (response.error) {
+                        displayError(response.error);
+                    }
+                }
+            });
+        });
+    }
+
+    function updatePosts(items) {
+        if (Array.isArray(items)) {
+            for (let i=0; i<items.length; i++) {
+                item = items[i];
+                let post = {
+                              id: item.id,
+                              text: item.text,
+                              title: item.title,
+                              terrain: item.terrain,
+                              rating: item.rating,
+                              difficulty: item.difficulty,
+                              position: {
+                                lat: Number(item.latitude),
+                                lng: Number(item.longitude),
+                              }
+                           }
+
+                if (postIDs[item.id] == null) {
+                    posts.push(post);
+                } else {
+                    let existingRating = document.getElementById("rating"+item.id);
+                    if (existingRating != null && item.rating != existingRating.innerHTML) {
+                        let existingStars = document.getElementById("stars"+item.id);
+                        let stars = ""
+                        for (let i=0; i<Math.floor(item.rating); i++) {
+                          stars += "<i aria-hidden='true' class='fa-solid fa-star'></i>\n"
+                        }
+
+                        if ((item.rating % 1) > 1) {
+                          stars += "<i aria-hidden='true' class='fa-solid fa-star-half'></i>\n"
+                        }
+                        stars += `<span class='rating-text' id='rating${item.id}'>${sanitize(item.rating)}</span>\n`
+
+                        existingStars.innerHTML = stars;
+                    }
+                }
+            }
+        } else {
+            let post = {
+                          id: items.id,
+                          text: items.text,
+                          title: items.title,
+                          terrain: items.terrain,
+                          rating: items.rating,
+                          difficulty: items.difficulty,
+                          position: {
+                            lat: Number(items.latitude),
+                            lng: Number(items.longitude),
+                          }
+                       }
+            if (postIDs[items.id] == null) {
+                posts.push(post);
+            }
+        }
+
+        addMarkers();
+    }
+    /*****************************************************************/
+    /******************** End Info Fetching Logic ********************/
+    /*****************************************************************/
+
+    // Function to update serach results based on input
+    function updateSearchResults() {
+
+      let query = document.getElementById("searchInput").value;
+      document.getElementById("searchResults").innerHTML = '';
+      fetch('gpt_search?q=' + encodeURIComponent(query))
+
+        .then(response => response.json())
+        .then(data => {
+            // Clear previous search results
+            document.getElementById("searchResults").innerHTML = '';
+            // check if query long enough to use w/ gpt
+            if (query.length > 0) {
+              // Display search results
+              data.forEach(result => {
+              // Create a new div element for each search result
+              let resultDiv = document.createElement('li');
+              resultDiv.className = "searchResultLi"
+              resultDiv.innerHTML=`${result.name}`
+              resultDiv.onclick = function() {
+                    showPost(result.id);
+                };
+              //resultDiv.textContent = result.name; // Assuming each result has a 'name' property
+              document.getElementById("searchResults").appendChild(resultDiv);
+              });
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching search results:', error);
+        });
+
+        if (query.length == 0) {
+            document.getElementById("searchResults").innerHTML = '';
+        }
+    }
+
+    // event listener
+    document.getElementById("searchInput").addEventListener("input", updateSearchResults);
+
+    // document listening code
+    document.addEventListener('click', function(event) {
+        var searchInput = document.getElementById("searchInput");
+        var searchResults = document.getElementById("searchResults");
+
+        // Check if the click event happened outside the searchInput and searchResults
+        if (event.target !== searchInput && event.target !== searchResults) {
+            // Remove search results
+            if (searchResults) {
+                searchResults.innerHTML = '';
+            }
+        }
+    });
+
+
+</script>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" type="text/javascript">
+</script>
+
+{% endblock %}

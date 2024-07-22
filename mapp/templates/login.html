@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+
+    {% load static %}
+	<link href="{% static 'mapp/login.css' %}" rel="stylesheet" type="text/css">
+	<script src="{% static 'mapp/mapp.js' %}" type="text/javascript"></script>
+    <script src="https://use.fontawesome.com/releases/v6.2.0/js/all.js"></script>
+    <title>MAPP Login</title>
+</head>
+
+
+
+<body>
+<div class="background">
+    <div class="login-container">
+        <header>
+            <h1>MAPP</h1>
+            <p>Welcome! Let's get exploring</p>
+        </header>
+
+
+        <section class="email-login">
+
+            <form method="post" action="{% url 'login' %}" class = 'lr_form'>
+                <table>
+                    {% for field in form.visible_fields %}
+                        <tr>
+                            <td>{{field.label_tag}}</td>
+                            <td>{{field}}</td>
+                            <td class="error">
+                                {% for error in field.errors %} {{error}} {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            
+
+
+                <table>
+                <tr>
+                    <td>
+                        <label>Remember me</label>
+                    </td>
+                    <td>
+                        <input class="remember-me-checkbox" type="checkbox" id="remember-me" name="remember-me">
+                    </td>
+                </tr>
+                </table>
+                {% csrf_token %}
+                <button id="login-button">LOGIN</button>
+            </form>
+        </section>
+        <div>Or</div>
+        <button type="button" class="google-login-button" onclick="window.location.href='oauth/login/google-oauth2/'">
+            Login with Google
+        </button>
+
+        <footer>
+            <p>Don't have an account? 
+                <a href="{% url 'register' %}" id =id_register_link>
+                    Register
+                </a>
+            </p>
+        </footer>
+    </div>
+</div>
+</body>
+</html>

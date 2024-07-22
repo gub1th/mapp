@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block additional_css %}
+    {% load static %}
+    <link href="{% static 'mapp/profile.css' %}" rel="stylesheet" type="text/css">
+{% endblock additional_css %}
+
+{% block content %}
+    <div class="container mt-5">
+        
+        <h1 class="mb-4">Profile Page</h1>
+        
+        <div class="card" id="profile-details">
+            <div class="card-body" id="main-card-body">
+                <div id="profile-details-body">
+                    <div class="profile-image-wrapper">
+                        {% if not profile.profile_picture %}
+                            {% load static %}
+                            <img id="id_user_picture" src="{% static 'mapp/pictures/defaultProfilePicture.jpg' %}" alt="Profile Picture Default">
+                        {% else %}
+                            <img id="id_user_picture" src="{% url 'photo_profile' profile.id %}" alt="Profile Picture">
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h2 id="user-name">{{ profile.user.first_name }} {{ profile.user.last_name }}</h2>
+                        <p id="user-email">{{ profile.user.email }}</p>
+                        <p class="bio" id="user-bio">{{ profile.bio }}</p>
+                        {% if profile.user in request.user.profile.following.all %}
+                            <form action="{% url 'unfollow' profile.user.id %}" method="POST">
+                                <button id="id_unfollow" class="btn btn-danger">Unfollow</button>
+                                {% csrf_token %}
+                            </form>
+                        {% else %}
+                            <form action="{% url 'follow' profile.user.id %}" method="POST">
+                                <button id="id_follow" class="btn btn-primary">Follow</button>
+                                {% csrf_token %}
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <h2 class="my-4 rubik-bold">stats</h2>
+            <div class="container my-4">
+                <div class="stats-stuff">
+                    <div class="card" id="stats-1">
+                        <div class="card-body">
+                            <div class="card-title rubik-bold">{{ locations_added_count }}</div>
+                            <div class="card-subtitle">locations added</div>
+                        </div>
+                    </div>
+                    <div class="card" id="stats-2">
+                        <div class="card-body">
+                            <div class="card-title rubik-bold">{{ avg_post_rating }}</div>
+                            <div class="card-subtitle">avg post rating</div>
+                        </div>
+                    </div>
+                    <div class="card" id="stats-3">
+                        <div class="card-body">
+                            <div class="card-title rubik-bold">{{ comments_made_count }}</div>
+                            <div class="card-subtitle">comments made</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container text-center">
+            <div class="card" id="fav-list-card">
+                <div class="card-body">
+                    <h2 class="my-4 rubik-bold">fav lists</h2>
+                    <div class="row text-center">
+                        {% for playlist in user_playlists %}
+                            <div class="col-md-4 mb-4">
+                                <a class="playlist-link" href="{% url 'playlist_detail' playlist.id %}">
+                                    <div class="p-3 fav-list-indiv-card">
+                                        <div class="fav-name h4 mb-2">{{ playlist.name }}</div>
+                                        <div class="fav-count text-secondary">{{ playlist.posts.count }} locations</div>
+                                    </div>
+                                </a>
+                            </div>
+                            {% if forloop.counter|divisibleby:3 and not forloop.last %}
+                                </div><div class="row text-center"> 
+                            {% endif %}
+                        {% empty %}
+                            <div class="col">
+                                <p>No playlists found.</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

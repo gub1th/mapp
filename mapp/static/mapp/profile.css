@@ -1,0 +1,225 @@
+profile
+
+/* #profile-container {
+  margin-right: 0;
+} */
+
+/* #fav-list-container {
+  margin-right: 15px;
+}
+
+#following-contianer {
+  margin-left: 15px;
+} */
+
+#rowlists {
+  display: flex;
+  flex-direction: row;
+  justify-content:space-between;
+}
+
+#playlistRow {
+  align-items: stretch;
+}
+
+.fav-name {
+  color: black;
+}
+
+.follow-info-name {
+  color: black;
+  margin-left: 10px;
+}
+
+#id_bio {
+    width: 100%;
+    height: 100px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    font-size: 14px;
+}
+
+#main-card-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#profile-details {
+  background-color: #d9f4ff;
+  border-radius: 15px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+#fav-list-card {
+  background-color: #d9f4ff;
+  border-radius: 15px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.fav-list-indiv-card {
+  background-color: #d9fff7;
+  border-radius: 15px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  margin-top: 10px;
+}
+
+#following-list {
+  padding-left: 0;
+}
+
+.following-list-indiv-card {
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  margin-top: 10px;
+}
+
+ul {
+  list-style: none;
+}
+
+#following-card {
+  background-color: #d9f4ff;
+  border-radius: 15px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+#profile-details-body {
+  display: flex;
+}
+
+#profile-details-body > * {
+  margin: 0 10px;
+}
+
+#user-name {
+  font-weight: bold;
+  font-size: 30px;
+  padding: 0;
+  margin: 0;
+}
+
+#user-email {
+  font-weight: lighter;
+  font-size: 15px;
+  padding: 0;
+  margin: 0;
+}
+
+#user-bio {
+  font-weight: normal;
+  font-size: 18px;
+  margin-top: 10px;
+  word-wrap: break-word;
+}
+
+.stats-stuff {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.stat-value {
+  font-weight: bold;
+  font-size: 25px;
+}
+
+#stats-1, #stats-2, #stats-3 {
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+  border-radius: 15px;
+  width: 300px;
+}
+
+.favAndFollowing {
+  display: flex;
+  flex-direction: row;
+}
+
+#id_user_picture {
+  width: 200px;
+  height: 200px;
+  border-radius: 10%;
+}
+
+.user_follow_picture {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.follow-info-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+#editProfileBtn {
+  width: 24px;
+  height: 24px;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+#pencil-icon {
+  font-size: 15px;
+}
+  
+.my-modal {
+  display: none; 
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+}
+
+.my-modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; 
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%; 
+  border-radius: 5px;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.my-modal-content button[type="submit"] {
+  padding: 10px;
+  margin-top: 20px;
+  width: 30%;
+}
+
+.my-modal-form-header {
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+  
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+.playlist-link:hover {
+  text-decoration: none;
+}

@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+	<head profile="http://www.w3.org/2005/10/profile">
+	    <meta charset="utf-8">
+	    {% load static %}
+
+		{% block additional_css %}
+    	{% endblock additional_css %}
+        <link rel="icon" type="image/png" href="{% static 'mapp/mapp.png' %}">
+
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.4.1/font/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script src="{% static 'mapp/mapp.js' %}" type="text/javascript"></script>
+		<script src="{% static 'mapp/jquery.custom-animations.js' %}" type="text/javascript"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+        <script src="https://use.fontawesome.com/releases/v6.2.0/js/all.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+		<link href="{% static 'mapp/base.css' %}" rel="stylesheet" type="text/css">
+		<style>
+			@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+			@import url('https://fonts.googleapis.com/css2?family=Rubik+Mono+One&display=swap');
+
+			.rubik-regular {
+				font-family: "Rubik", sans-serif;
+				font-weight: 400;
+				font-style: normal;
+			}
+
+			.rubik-bold {
+				font-family: "Rubik", sans-serif;
+				font-weight: 700;
+				font-style: normal;
+			}
+
+			.rubik-mono-one-regular {
+			font-family: "Rubik Mono One", monospace;
+			font-weight: 400;
+			font-style: normal;
+			}
+
+			body * {
+				font-family: "Rubik", sans-serif;
+				font-weight: 400;
+				font-style: normal;
+			}
+		</style>
+
+		<title> MAPP </title>
+	</head>
+
+	<body>
+		<div class="navbar-container">
+			<a class="navbar rubik-mono-one-regular" href="{% url 'map_page' %}" id="main-title">
+				MAPP
+			</a>
+			<a class="navbar" href="{% url 'rec_page' %}" id ="id_nav_rec_stream">
+				For You
+			</a>
+			<a class="navbar" href="{% url 'profile' %}" id="id_nav_profile">
+				My Profile
+			</a>
+			<a class="navbar" href="{% url 'logout' %}" id="id_nav_logout">
+				Logout
+			</a>
+		</div>
+
+	    <div class="content">
+		    {% block content %}
+		    {% endblock %}
+		</div>
+
+	</body>
+</html>

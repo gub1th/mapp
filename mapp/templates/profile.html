@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block additional_css %}
+    {% load static %}
+    <link href="{% static 'mapp/profile.css' %}" rel="stylesheet" type="text/css">
+{% endblock additional_css %}
+
+{% block content %}
+    <div class="container mt-2" id="profile-container">
+    <!-- <div class="container ms-0 mt-2 me-0 pl-0"> -->
+        
+        <h1 class="mb-4">Profile Page</h1>
+        
+        <div class="card col-12" id="profile-details">
+            <div class="card-body" id="main-card-body">
+                <div id="profile-details-body">
+                    <div class="profile-image-wrapper">
+                        {% if not request.user.profile.profile_picture %}
+                            {% load static %}
+                            <img id="id_user_picture" src="{% static 'mapp/pictures/defaultProfilePicture.jpg' %}" alt="Profile Picture Default">
+                        {% else %}
+                            <img id="id_user_picture" src="{% url 'photo_profile' request.user.profile.id %}" alt="Profile Picture">
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h2 id="user-name">{{ request.user.first_name }} {{ request.user.last_name }}</h2>
+                        <p id="user-email">{{ request.user.email }}</p>
+                        <p class="bio" id="user-bio">{{ request.user.profile.bio }}</p>
+                    </div>
+                </div>
+                <button class="btn" id="editProfileBtn">
+                    <i class="fas fa-pencil-alt" id="pencil-icon"></i>
+                </button>
+
+                <div id="editProfileModal" class="my-modal">
+                    <div class="my-modal-content">
+                        <span class="close" id="editProfileClose">&times;</span>
+                        <!-- <form method="post" action="{% url 'profile' %}" enctype="multipart/form-data" class="modal-form">
+                            {% csrf_token %}
+                            <label for="profile_picture" class="my-modal-form-header">Profile Picture</label>
+                            <input type="file" name="profile_picture">
+                            <label for="bio" class="my-modal-form-header">Bio</label>
+                            <input type="textarea" name="bio" rows="3" placeholder="Enter your bio">
+                            <button class="btn btn-primary" type="submit">Save Profile</button>
+                        </form> -->
+                
+                        <form action="{% url 'profile' %}" method="POST" enctype="multipart/form-data">
+                            <table>
+                                {{user_profile_form}}
+                            </table>
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <h2 class="my-4 rubik-bold">stats</h2>
+            <div class="container my-4 p-0">
+                <div class="stats-stuff">
+                    <div class="card" id="stats-1">
+                        <div class="card-body">
+                            <div class="card-title rubik-bold">{{ locations_added_count }}</div>
+                            <div class="card-subtitle">locations added</div>
+                        </div>
+                    </div>
+                    <div class="card" id="stats-2">
+                        <div class="card-body">
+                            <div class="card-title rubik-bold">{{ avg_post_rating }}</div>
+                            <div class="card-subtitle">avg post rating</div>
+                        </div>
+                    </div>
+                    <div class="card" id="stats-3">
+                        <div class="card-body">
+                            <div class="card-title rubik-bold">{{ comments_made_count }}</div>
+                            <div class="card-subtitle">comments made</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center" id="rowlists" style="display:flex; justify-content:space-between">
+            <div class="col-6" id="fav-list-container">
+                <div class="card" id="fav-list-card">
+                    <div class="card-body">
+                        <h2 class="my-4 rubik-bold">fav lists</h2>
+                        <div class="row text-center d-flex align-items-stretch" id="playlistRow">
+                        {% for playlist in user_playlists %}
+                            <div class="col-md-6 mb-2">
+                                <a class="playlist-link" href="{% url 'playlist_detail' playlist.id %}">
+                                    <div class="p-3 fav-list-indiv-card">
+                                        <div class="fav-name h4 mb-2">{{ playlist.name }}</div>
+                                        <div class="fav-count text-secondary">{{ playlist.posts.count }} locations</div>
+                                        <a href="{% url 'playlist_delete' playlist.id %}" class="btn btn-danger">Delete</a>
+                                    </div>
+                                </a>
+                            </div>
+                            {% if forloop.counter|divisibleby:2 and not forloop.last %}
+                                </div><div class="row text-center"> 
+                            {% endif %}
+                        {% empty %}
+                            <div class="col">
+                                <p>No lists found.</p>
+                            </div>
+                        {% endfor %}
+                        </div>
+                        <button class="btn btn-primary" id="addPlaylistBtn">Add Playlist</button>
+                        <div id="playlistModal" class="my-modal">
+                            <div class="my-modal-content">
+                                <span class="close" id="playlistClose">&times;</span>
+                                <form method="post" action="{% url 'profile' %}" enctype="multipart/form-data">
+                                    {% csrf_token %}
+                                    {{ playlist_form.name }}
+                                    <input type="hidden" name="playlist" value="1">
+                                    <button type="submit" class="btn btn-primary">Create Playlist</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6" id="following-container">
+                <div class="card" id="following-card">
+                    <div class="card-body" id="following-card-body">
+                        <h2 class="my-4 rubik-bold">following</h2>
+                        <ul id="following-list">
+                            {% for u in request.user.profile.following.all %}
+                                <li class="following-list-indiv-card">
+                                    <div class="card-body">
+                                        <a href="{% url 'other_profile' u.id %}" id="id_profile_link_{{u}}">
+                                            <div class="follow-info-wrapper">
+                                                <div class="profile-image-wrapper">
+                                                    {% if not u.profile.profile_picture %}
+                                                        {% load static %}
+                                                        <img class="user_follow_picture" src="{% static 'mapp/pictures/defaultProfilePicture.jpg' %}" alt="Profile Picture Default">
+                                                    {% else %}
+                                                        <img class="user_follow_picture" src="{% url 'photo_profile' u.profile.id %}" alt="Profile Picture">
+                                                    {% endif %}
+                                                </div>
+                                                <div class="follow-info-name">
+                                                    {{u.first_name}} {{u.last_name}}
+                                                </div>
+                                                
+                                            </div>
+                                        </a>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function setupModal(modalId, btnId, closeId) {
+            var modal = document.getElementById(modalId);
+            var btn = document.getElementById(btnId);
+            var span = document.getElementById(closeId);
+            
+            btn.onclick = function() {
+                modal.style.display = "block";
+            };
+            
+            span.onclick = function() {
+            modal.style.display = "none";
+            }
+            
+            window.onclick = function(event) {
+                if (event.target === modal) {
+                modal.style.display = "none";
+                }
+            };
+        }
+
+        setupModal('editProfileModal', 'editProfileBtn', 'editProfileClose');
+        setupModal('playlistModal', 'addPlaylistBtn', 'playlistClose');
+    </script>
+{% endblock %}

@@ -1,0 +1,465 @@
+{% extends "base.html" %}
+{% block herf_div %}
+<div>
+    <a class="nav" href="{% url 'profile' %}" id ="id_nav_profile">
+        my profile
+    </a>
+</div>
+<div>
+    <a class="nav" href="{% url 'test_page' %}" id ="id_nav_global_stream">
+        Map
+    </a>
+    <a class="nav" href="{% url 'map_page' %}" id ="id_nav_danmap">
+        Dan Map
+    </a>
+    <a class="nav" href="{% url 'rec_page' %}" id ="id_nav_rec_stream">
+        For You
+    </a>
+    <a class="nav" href="{% url 'logout' %}" id ="id_nav_logout">
+        Logout
+    </a>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<h1>The map page</h1>
+
+<div class="top">
+    <div id="map" class="full-map"></div>
+    <br>
+    <div class="post-form" id="new-post">
+        <input class="new-post-button" type="button" value="X">
+        <form enctype="multipart/form-data" id="new-post-form" method="post">
+            <table>
+                {% for field in form.visible_fields %}
+                    {% if field.id_for_label == "id_image" %}
+                        <tr>
+                            <td>{{field.label_tag}}</td>
+                            <td>
+                                <div class="img-container">
+                                    <img class="uploaded-img" id="blank-upload"/>
+                                    {{field}}
+                                </div>
+                            </td>
+                            <td class="error">
+                                {% for error in field.errors %} {{error}} {% endfor %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                            <div class="delete-crop">
+                                <label class="sl-btn sl-upload" for="id_image">
+                                    <span class="sl-btn-text">Upload</span>
+                                    <span class="sl-btn-icon">
+                                        <i aria-hidden="true" class="fa fa-icon fa-upload"></i>
+                                    </span>
+                                </label>
+                                <label class="sl-btn sl-crop" id="crop-button">
+                                    <span class="sl-btn-text">Crop</span>
+                                    <span class="sl-btn-icon">
+                                        <i aria-hidden="true" class="fa fa-icon fa-scissors"></i>
+                                    </span>
+                                </label>
+                            </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td>{{field.label_tag}}</td>
+                            <td>{{field}}</td>
+                            <td class="error">
+                                {% for error in field.errors %} {{error}} {% endfor %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+
+                {% for hidden in form.hidden_fields %}
+                    {{hidden}}
+                {% endfor %}
+
+                <tr><td colspan="3">
+                    <label>
+                        Location Type:
+                    </label>
+
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="landmark" checked="checked">
+                      <i aria-hidden="true" class="fa fa-icon fa-landmark"></i>
+                    </label>
+
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="umbrella-beach">
+                      <i aria-hidden="true" class="fa fa-icon fa-umbrella-beach"></i>
+                    </label>
+
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="mountain-sun">
+                      <i aria-hidden="true" class="fa fa-icon fa-mountain-sun"></i>
+                    </label>
+
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="building">
+                      <i aria-hidden="true" class="fa fa-icon fa-building"></i>
+                    </label>
+
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="shop">
+                      <i aria-hidden="true" class="fa fa-icon fa-shop"></i>
+                    </label>
+
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="water">
+                      <i aria-hidden="true" class="fa fa-icon fa-water"></i>
+                    </label>
+
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="palette">
+                      <i aria-hidden="true" class="fa fa-icon fa-palette"></i>
+                    </label>
+
+                    <label class="tradio">
+                      <input type="radio" name="terrain" value="tree">
+                      <i aria-hidden="true" class="fa fa-icon fa-tree"></i>
+                    </label>
+                </td></tr>
+                <tr><td colspan="3"><input type="hidden" id="x" name="x" value=""></td></tr>
+                <tr><td colspan="3"><input type="hidden" id="y" name="y" value=""></td></tr>
+                <tr><td colspan="3"><input type="hidden" id="width" name="width" value=""></td></tr>
+                <tr><td colspan="3"><input type="hidden" id="height" name="height" value=""></td></tr>
+                <tr><td colspan="3"><input type="hidden" id="scaleX" name="scaleX" value=""></td></tr>
+                <tr><td colspan="3"><input type="hidden" id="scaleY" name="scaleY" value=""></td></tr>
+                <tr><td colspan="3"><input type="submit" value="Submit" onclick="addPost()" id="id_update_profile_button"></td></tr>
+            </table>
+            {% csrf_token %}
+        </form>
+    </div>
+</div>
+
+<script>
+
+    function addPost() {
+        // let postTitle = document.getElementById(`id_comment_input_text_${id}`)
+        // let postImage = document.getElementById(`id_comment_input_text_${id}`)
+        // let commentTextValue   = commentTextElement.value
+
+        // Clear input box and old error message (if any)
+        // commentTextElement.value = ''
+        // displayError('')
+
+        let form = document.getElementById('new-post-form');
+        let img = document.getElementById('id_image');
+        let fd = new FormData(form);
+        fd.remove('image');
+        fd.append('image', file);
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState !== 4) return;
+            updatePosts(JSON.parse(xhr.responseText)['posts']);
+        }
+
+        xhr.open("POST", "{% url 'add_post' %}", true);
+        xhr.setRequestHeader("Content-type", "multipart/form-data"); // application/x-www-form-urlencoded");
+        xhr.send(`title=${fd.get('title')}&text=${fd.get('text')}&image=${fd.get('image')}&latitude=${fd.get('latitude')}&longitude=${fd.get('longitude')}&terrain=${fd.get('terrain')}&x=${fd.get('x')}&y=${fd.get('y')}&width=${fd.get('width')}&height=${fd.get('height')}&scaleX=${fd.get('scaleX')}&scaleY=${fd.get('scaleY')}&csrfmiddlewaretoken=${fd.get('csrfmiddlewaretoken')}`);
+    }
+
+
+    var container = document.querySelector('.img-container');
+    var image = container.getElementsByTagName('img').item(0);
+    var inputImage = document.getElementById('id_image');
+    var uploadedImageURL;
+    var cropper;
+
+    var options = {
+      aspectRatio: 1 / 1,
+    };
+
+    inputImage.onchange = function () {
+      var files = this.files;
+      var file;
+
+      if (files && files.length) {
+        file = files[0];
+
+        if (/^image\/\w+/.test(file.type)) {
+          uploadedImageType = file.type;
+          uploadedImageName = file.name;
+
+          if (uploadedImageURL) {
+            URL.revokeObjectURL(uploadedImageURL);
+          }
+
+          image.src = uploadedImageURL = URL.createObjectURL(file);
+
+          if (cropper) {
+            cropper.destroy();
+          }
+
+          cropper = new Cropper(image, options);
+        } else {
+          window.alert('Please choose an image file.');
+        }
+      }
+    };
+
+    var map;
+    var newPost;
+    var selectedPost = null;
+
+    $(document).ready(function() {
+        $('#new-post').hide();
+
+        $(".new-post-button").click(function(event) {
+            $("#new-post").hide("slide", {direction: "left"}, 900);
+            newPost.map = null;
+
+            $("#map").animate({width: "85vw", left:"7.5vw"}, 900);
+        });
+
+        $("#crop-button").click(function(event) {
+            if (cropper) {
+                cropper.disable();
+                let _x = document.getElementById("x");
+                let _y = document.getElementById("y");
+                let _width = document.getElementById("width");
+                let _height = document.getElementById("height");
+                let _scaleX = document.getElementById("scaleX");
+                let _scaleY = document.getElementById("scaleY");
+
+                let cropperData = cropper.getData(true);
+                _x.value      = cropperData.x.toString();
+                _y.value      = cropperData.y.toString();
+                _width.value  = cropperData.width.toString();
+                _height.value = cropperData.height.toString();
+                _scaleX.value = cropperData.scaleX.toString();
+                _scaleY.value = cropperData.scaleY.toString();
+            }
+        });
+
+        $("#new-post-form").submit(function(e) {
+            e.preventDefault();
+        });
+    });
+
+    async function initMap() {
+      // Request needed libraries.
+      const { Map } = await google.maps.importLibrary("maps");
+      const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
+      // TODO: Add geolocation to make center where user is currently located
+      const center = {lat: 33.093637, lng: -117.204765};
+
+      map = new Map(document.getElementById("map"), {
+        zoom: 11,
+        // minZoom: 3,
+        // maxZoom: 14,
+        center,
+        mapId: "d9e2ac9134010143",
+        clickableIcons: false,
+        disableDoubleClickZoom: true,
+        fullscreenControl: false,
+      });
+
+      newPost = new google.maps.marker.AdvancedMarkerElement({
+          map,
+          position: {lat: 33.093637, lng: -117.204765},
+      });
+
+      newPost.map = null;
+
+      map.addListener("dblclick", (mapsMouseEvent) => {
+        let position = mapsMouseEvent.latLng;
+
+        if (newPost.map == null) {
+            newPost.map = map;
+        }
+
+        newPost.position = position;
+
+        $("#new-post").show("slide", {direction: "left"}, 900);
+        $("#map").animate({width: "55vw", left:"37.5vw"}, 900);
+        map.setZoom(11);
+        map.panTo(position);
+
+        if (selectedPost != null) {
+            selectedPost.content.classList.remove("highlight");
+            selectedPost.zIndex = null;
+            selectedPost = null;
+        }
+
+        let lat = document.getElementById("id_latitude");
+        let lon = document.getElementById("id_longitude");
+        lat.value = position.lat().toString();
+        lon.value = position.lng().toString();
+      });
+    }
+
+    function addMarkers() {
+      for (const post of posts) {
+        if (!postIDs.includes(post.id)) {
+            postIDs.push(post.id);
+            const AdvancedMarkerElement = new google.maps.marker.AdvancedMarkerElement({
+              map,
+              content: buildContent(post),
+              position: post.position,
+              title: post.title,
+            });
+
+            AdvancedMarkerElement.addListener("click", () => {
+                if (document.getElementById("new-post").style.display == "none") {
+                    if (!AdvancedMarkerElement.content.classList.contains("highlight")) {
+                        map.setZoom(11);
+                        map.panTo(post.position);
+                    }
+
+                    toggleHighlight(AdvancedMarkerElement, post);
+                }
+            });
+        }
+      }
+    }
+
+    function toggleHighlight(markerView, post) {
+      if (markerView.content.classList.contains("highlight")) {
+        markerView.content.classList.remove("highlight");
+        markerView.zIndex = null;
+        selectedPost = null;
+      } else {
+        // let otherPosts = document.getElementsByClassName("post highlight");
+        if (selectedPost != null) {
+            selectedPost.content.classList.remove("highlight");
+            selectedPost.zIndex = null;
+        }
+        markerView.content.classList.add("highlight");
+        markerView.zIndex = 1;
+        selectedPost = markerView;
+      }
+    }
+
+
+    const imageURL = function (id) {
+        return "{% url 'photo' 0 %}".replace("0",id)
+    }
+
+    function buildContent(post) {
+      const content = document.createElement("div");
+
+      content.classList.add("post");
+      content.innerHTML = `
+        <div class="icon">
+            <i aria-hidden="true" class="fa fa-icon fa-${post.terrain}" title="${post.title}"></i>
+            <span class="fa-sr-only">${post.terrain}</span>
+        </div>
+        <div class="pic">
+            <img src="${imageURL(post.id)}">
+        </div>
+        <div class="details">
+            <div class="title">${post.title}</div>
+            <div class="text">${post.text}</div>
+            <div class="features">
+                <div class="stars">
+                    <i aria-hidden="true" class="fa-solid fa-star"></i>
+                    <i aria-hidden="true" class="fa-solid fa-star"></i>
+                    <i aria-hidden="true" class="fa-solid fa-star"></i>
+                    <i aria-hidden="true" class="fa-solid fa-star-half"></i>
+                    <span class="rating-text">${post.rating}</span>
+                </div>
+                <div class="difficulty">
+                    <i aria-hidden="true" class="fa-solid fa-person-hiking"></i>
+                    <span class="rating-text">${post.difficulty}</span>
+                </div>
+                <div>
+                    <a class="post-link" href="test_page">See full post</a>
+                </div>
+            </div>
+        </div>
+        `;
+      return content;
+    }
+
+    var loadFile = function(event) {
+    	var image = document.getElementById('output');
+    	image.src = URL.createObjectURL(event.target.files[0]);
+    };
+
+    const postIDs = [];
+    const posts = [];
+
+    window.onload = initMap;
+    window.onload = getGlobal;
+    window.setInterval(getGlobal, 5000);
+
+    function getGlobal() {
+        let xhr = new XMLHttpRequest()
+        xhr.onreadystatechange = function() {
+            if (this.readyState !== 4) return
+            updatePage(xhr)
+        }
+
+        xhr.open("GET", "get-global", true)
+        xhr.send()
+    }
+
+    function updatePage(xhr) {
+        if (xhr.status === 200) {
+            let response = JSON.parse(xhr.responseText)
+            updatePosts(response['posts'])
+            return
+        }
+
+        if (xhr.status === 0) {
+            displayError("Cannot connect to server")
+            return
+        }
+
+
+        if (!xhr.getResponseHeader('content-type') === 'application/json') {
+            displayError(`Received status = ${xhr.status}`)
+            return
+        }
+
+        let response = JSON.parse(xhr.responseText)
+        if (response.hasOwnProperty('error')) {
+            displayError(response.error)
+            return
+        }
+
+        displayError(response)
+    }
+
+    function displayError(error) {
+        let errorElement = document.getElementById("error")
+        errorElement.innerHTML = error
+    }
+
+    function updatePosts(items) {
+        for (i in items) {
+            item = items[i];
+            let post = {
+                          id: item.id,
+                          text: item.text,
+                          title: item.title,
+                          terrain: item.terrain,
+                          rating: item.rating,
+                          difficulty: item.difficulty,
+                          position: {
+                            lat: Number(item.latitude),
+                            lng: Number(item.longitude),
+                          }
+                       }
+            if (!postIDs.includes(item.id)) {
+                posts.push(post);
+            }
+        }
+        addMarkers();
+    }
+
+</script>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ google_maps_api_key }}&callback=initMap" type="text/javascript">
+</script>
+
+{% endblock %}

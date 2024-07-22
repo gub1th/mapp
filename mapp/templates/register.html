@@ -1,0 +1,51 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+
+    {% load static %}
+	<link href="{% static 'mapp/login.css' %}" rel="stylesheet" type="text/css">
+	<script src="{% static 'mapp/mapp.js' %}" type="text/javascript"></script>
+    <script src="https://use.fontawesome.com/releases/v6.2.0/js/all.js"></script>
+    <title>MAPP Register</title>
+</head>
+
+
+
+<body>
+<div class="background">
+    <div class="login-container">
+        <header>
+            <h1>MAPP</h1>
+            <p>Welcome! Let's get exploring</p>
+        </header>
+        <section class="email-login">
+            <form method="post" action="{% url 'register' %}" class="lr_form">
+                <table>
+                    {% for field in form.visible_fields %}
+                        <tr>
+                            <td>{{field.label_tag}}</td>
+                            <td>{{field}}</td>
+                            <td class="error">
+                                {% for error in field.errors %} {{error}} {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {% csrf_token %}
+                <button id="login-button">REGISTER</button>
+            </form>
+        </section>
+        <footer>
+            <p>Have an account? 
+                <a href="{% url 'login' %}" id =id_register_link>
+                    Login
+                </a>
+            </p>
+        </footer>
+    </div>
+</div>
+</body>
+</html>

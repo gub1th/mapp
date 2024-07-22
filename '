@@ -1,0 +1,624 @@
+body::-webkit-scrollbar {
+  width: 0.3rem;
+}
+
+body::-webkit-scrollbar-track {
+  background:#1e1e24;
+}
+body::-webkit-scrollbar-thumb {
+background: #2400d7
+}
+
+button {
+    font-size: x-large;
+    padding: 3px;
+}
+
+input {
+    font-size: x-large;
+}
+
+.content {
+    width: 100%;
+    font-size: x-large;
+}
+
+#id_header_div {
+    background-color: darkred;
+    width: 100%;
+    margin: 0px;
+    padding: 10px;
+}
+
+#id_site_name {
+    font-size: xx-large;
+    color: white;
+}
+
+#id_herf_div {
+    width: 90%;
+    text-align: right;
+}
+
+#id_register_link{
+    font-size:medium;
+    color:white;
+}
+
+.nav {
+    margin:15px;
+    font-size:medium;
+    color:white;
+}
+
+#id_page_name{
+    margin-top:40px;
+    margin-left:40%;
+    font-size: xx-large;
+    color:black;
+}
+
+
+.comment_div {
+    margin-left:40px;
+}
+
+.post_date_time {
+    font-family: cursive;
+    font-size: large;
+}
+
+.comment_date_time {
+    font-family: cursive;
+}
+
+#id_user_picture {
+    margin-left:42%;
+}
+
+
+.lr_form {
+    margin-top: 30px;
+    margin-left:35%;
+}
+
+
+
+
+/*global stream*/
+.post_list {
+    margin-left: 25%;
+}
+
+.new_post_table {
+    margin-left: 23%;
+    padding-top: 30px;
+}
+
+
+
+.post_text{
+    word-wrap: break-word;
+}
+
+.post_div {
+    width:70%;
+    margin-top: 30px;
+}
+
+button {
+    font-size: x-large;
+    padding: 3px;
+}
+
+input {
+    font-size: x-large;
+}
+
+.content {
+    width: 100%;
+    font-size: x-large;
+}
+
+#id_header_div {
+    background-color: darkred;
+    width: 100%;
+    margin: 0px;
+    padding: 10px;
+}
+
+#id_site_name {
+    font-size: xx-large;
+    color: white;
+}
+
+#id_herf_div {
+    width: 90%;
+    text-align: right;
+}
+
+#id_register_link{
+    font-size:medium;
+    color:white;
+}
+
+.nav {
+    margin:15px;
+    font-size:medium;
+    color:white;
+}
+
+#id_page_name{
+    margin-top:40px;
+    margin-left:40%;
+    font-size: xx-large;
+    color:black;
+}
+
+.comment_div {
+    margin-left:40px;
+}
+
+.post_date_time {
+    font-family: cursive;
+    font-size: large;
+}
+
+.comment_date_time {
+    font-family: cursive;
+}
+
+#id_user_picture {
+    margin-left:42%;
+}
+
+
+.lr_form {
+    margin-top: 30px;
+    margin-left:35%;
+}
+
+/*global stream*/
+.post_list {
+    margin-left: 25%;
+}
+
+.new_post_table {
+    margin-left: 23%;
+    padding-top: 30px;
+}
+
+.post_text{
+    word-wrap: break-word;
+}
+
+.post_div {
+    width:70%;
+    margin-top: 30px;
+}
+
+/*profile*/
+.my_profile_table {
+    margin-left: 28%;
+}
+
+.my_profile_follower_div {
+    margin-left: 30%;
+    padding-top: 30px;
+}
+
+textarea {
+    width: 800px;
+    height: 350px;
+    resize:vertical;
+    font-size: xx-large;
+}
+
+.other_bio_div {
+    width: 800px;
+    border: 3px;
+    word-break:break-all;
+    font-size: xx-large;
+    margin-left: 28%;
+    margin-top: 30px;
+}
+
+.follow_link {
+    margin-left: 48%;
+    margin-top: 30px;
+}
+
+.comment_div{
+    margin-left: 40px;
+}
+.new_comment_div {
+    margin-left: 40px;
+}
+#new_post_div {
+    margin-left: 25%;
+    margin-top: 30px;
+}
+
+:root {
+  --mountain-sun-color: #558B2F;
+  --water-color: #1b3985;
+  --shop-color: #7B1FA2;
+  --beach-color: #FFD700;
+  --tree-color: #065535;
+  --landmark-color: #FFC0CB;
+  --building-color: #666666;
+  --palette-color: #FF7F50;
+}
+/*
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+*/
+
+.top {
+    position: relative;
+}
+
+#map {
+    /* margin-left: auto;
+    margin-right: auto; */
+    position: absolute;
+    left: 7.5vw;
+    top: 2vw;
+    width: 85vw;
+    height: 65vh;
+}
+
+.post-form {
+    position: absolute;
+    top: 2vw;
+    left: 7.5vw;
+    background: lightgreen;
+    width: 40vw;
+}
+
+.post-form form {
+    margin-left: 0;
+    background: lightgreen;
+}
+
+.post-link {
+    color: #000000;
+    text-decoration: none;
+}
+
+.post-link:hover {
+    color: #000000;
+    text-decoration: underline;
+}
+
+.post {
+  box-sizing: content-box;
+  align-items: center;
+  background-color: #FFFFFF;
+  border-radius: 50%;
+  color: #263238;
+  display: flex;
+  font-size: 14px;
+  gap: 15px;
+  height: 28px;
+  justify-content: center;
+  padding: 4px;
+  position: relative;
+  position: relative;
+  transition: all 0.3s ease-out;
+  width: 28px;
+}
+
+ .post::after {
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 9px solid #FFFFFF;
+  content: "";
+  height: 0;
+  left: 50%;
+  position: absolute;
+  top: 95%;
+  transform: translate(-50%, 0);
+  transition: all 0.3s ease-out;
+  width: 0;
+  z-index: 1;
+}
+
+.post .icon {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  color: #FFFFFF;
+}
+
+.post .icon svg {
+  height: 19px;
+  width: auto;
+}
+
+.post .pic {
+  display: none;
+}
+
+.post.highlight .pic {
+  display: flex;
+}
+
+.post.highlight .pic img {
+  border-radius: 5px;
+  height: 175px;
+  width: 175px;
+}
+
+.post .details {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+}
+
+.post .title {
+  text-align: center;
+  font-size: 25px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.post .text {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+  word-wrap: break-word;
+  color: #9E9E9E;
+  font-size: 12px;
+  margin-bottom: 10px;
+  margin-top: 5px;
+  width: 175px;
+}
+
+.post .features {
+  align-items: flex-end;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.post .features > div {
+  align-items: center;
+  background: #F5F5F5;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  display: flex;
+  font-size: 10px;
+  gap: 5px;
+  padding: 5px;
+}
+
+.post.highlight {
+  background-color: #FFFFFF;
+  border-radius: 8px;
+  box-shadow: 10px 10px 5px rgba(0, 0, 0, 0.2);
+  height: auto;
+  padding: 8px 15px;
+  width: auto;
+}
+
+.post.highlight::after {
+  z-index: 1;
+  border-top: 15px solid #FFFFFF;
+}
+
+.post.highlight .details {
+  display: flex;
+  z-index: 2;
+}
+
+.post.highlight .icon {
+  display: none;
+}
+
+.post.highlight .icon svg {
+  width: 50px;
+  height: 50px;
+}
+
+/*
+ * Terrain inputs
+ */
+
+.tradio input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.tradio svg {
+  width: 50px;
+  height: 50px;
+}
+
+.tradio:hover input ~ svg {
+  opacity: 50%;
+  cursor: pointer;
+}
+
+.tradio:has(.fa-building) input:checked ~ svg{
+  opacity: 100%;
+  color: var(--building-color);
+}
+
+.tradio:has(.fa-mountain-sun) input:checked ~ svg{
+  opacity: 100%;
+  color: var(--mountain-sun-color);
+}
+
+.tradio:has(.fa-palette) input:checked ~ svg{
+  opacity: 100%;
+  color: var(--palette-color);
+}
+
+.tradio:has(.fa-tree) input:checked ~ svg{
+  opacity: 100%;
+  color: var(--tree-color);
+}
+
+.tradio:has(.fa-shop) input:checked ~ svg{
+  opacity: 100%;
+  color: var(--shop-color);
+}
+
+.tradio:has(.fa-umbrella-beach) input:checked ~ svg{
+  opacity: 100%;
+  color: var(--beach-color);
+}
+
+.tradio:has(.fa-water) input:checked ~ svg{
+  opacity: 100%;
+  color: var(--water-color);
+}
+
+.tradio:has(.fa-landmark) input:checked ~ svg{
+  opacity: 100%;
+  color: var(--landmark-color);
+}
+
+
+/*
+ * Mountain icon colors.
+ */
+.post.highlight:has(.fa-mountain-sun) .icon {
+  color: var(--mountain-sun-color);
+}
+
+.post:not(.highlight):has(.fa-mountain-sun) {
+  background-color: var(--mountain-sun-color); /* var(--user-color); */
+}
+
+.post:not(.highlight):has(.fa-mountain-sun)::after {
+  border-top: 9px solid var(--mountain-sun-color); /* var(--user-color); */
+}
+
+/*
+ * Water icon colors.
+ */
+.post.highlight:has(.fa-water) .icon {
+  color: var(--water-color);
+}
+
+.post:not(.highlight):has(.fa-water) {
+  background-color: var(--water-color); /* var(--user-color); */
+}
+
+.post:not(.highlight):has(.fa-water)::after {
+  border-top: 9px solid var(--water-color); /* var(--user-color); */
+}
+
+/*
+ * Palette icon colors.
+ */
+.post.highlight:has(.fa-palette) .icon {
+  color: var(--palette-color);
+}
+
+.post:not(.highlight):has(.fa-palette) {
+  background-color: var(--palette-color); /* var(--user-color); */
+}
+
+.post:not(.highlight):has(.fa-palette)::after {
+  border-top: 9px solid var(--palette-color); /* var(--user-color); */
+}
+
+/*
+ * building icon colors.
+ */
+.post.highlight:has(.fa-building) .icon {
+  color: var(--building-color);
+}
+
+.post:not(.highlight):has(.fa-building) {
+  background-color: var(--building-color); /* var(--user-color); */
+}
+
+.post:not(.highlight):has(.fa-building)::after {
+  border-top: 9px solid var(--building-color); /* var(--user-color); */
+}
+
+/*
+ * shop icon colors.
+ */
+.post.highlight:has(.fa-shop) .icon {
+  color: var(--shop-color);
+}
+
+.post:not(.highlight):has(.fa-shop) {
+  background-color: var(--shop-color); /* var(--user-color); */
+}
+
+.post:not(.highlight):has(.fa-shop)::after {
+  border-top: 9px solid var(--shop-color); /* var(--user-color); */
+}
+
+/*
+ * landmark icon colors.
+ */
+.post.highlight:has(.fa-landmark) .icon {
+  color: var(--landmark-color);
+}
+
+.post:not(.highlight):has(.fa-landmark) {
+  background-color: var(--landmark-color); /* var(--user-color); */
+}
+
+.post:not(.highlight):has(.fa-landmark)::after {
+  border-top: 9px solid var(--landmark-color); /* var(--user-color); */
+}
+
+/*
+ * umbrella-beach icon colors.
+ */
+.post.highlight:has(.fa-umbrella-beach) .icon {
+  color: var(--beach-color);
+}
+
+.post:not(.highlight):has(.fa-umbrella-beach) {
+  background-color: var(--beach-color); /* var(--user-color); */
+}
+
+.post:not(.highlight):has(.fa-umbrella-beach)::after {
+  border-top: 9px solid var(--beach-color); /* var(--user-color); */
+}
+
+/*
+ * tree icon colors.
+ */
+.post.highlight:has(.fa-tree) .icon {
+  color: var(--tree-color);
+}
+
+.post:not(.highlight):has(.fa-tree) {
+  background-color: var(--tree-color); /* var(--user-color); */
+}
+
+.post:not(.highlight):has(.fa-tree)::after {
+  border-top: 9px solid var(--tree-color); /* var(--user-color); */
+}
+
+/* ************************************** */
+.post.highlight:has(.fa-star) .stars{
+  color: #FEDF00;
+}
+
+.post.highlight:has(.fa-person-hiking) .difficulty{
+  color: #26479C;
+}
+
+.post.highlight:has(.fa-star) .rating-text{
+  color: #000000;
+}
